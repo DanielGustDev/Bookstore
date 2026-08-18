@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 let books = [
   {
     "name": "Die Geheimnisse des Ozeans",

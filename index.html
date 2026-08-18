@@ -14,15 +14,22 @@
     <link rel="stylesheet" href="./styles/fonts.css">
     <link rel="stylesheet" href="./styles/variables.css">
 
-    <script src="./script.js"></script>
+    <script src="./scripts/database.js"></script>
     <script src="./scripts/templates.js"></script>
+    <script src="./script.js"></script>
 
 </head>
 
-<body>
+<body onload="init()">
     <header>
-        <h1>Small Bookstore</h1>
+        <div class="headline">
+            <img src="./assets/icons/book-white.svg" alt="book icon">
+            <h1>Small Bookstore</h1>
+        </div>
     </header>
+    <main>
+        <article id="book-container"></article>
+    </main>
 </body>
 
 </html>
