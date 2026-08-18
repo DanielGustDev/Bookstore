@@ -74,14 +74,14 @@ function createBookCardTemplate(singleBook, bookIndex) {
       <div class="divider"></div>
 
       <div class="comments-section">
-        <h3>Kommentare:</h3>
+        <h3>Comments:</h3>
         <div class="comments-list">
           ${commentsHtml}
         </div>
         
         <form class="comment-input-box" onsubmit="addComment(event, ${bookIndex})">
           <input type="text" placeholder="Add your comment ..." required>
-          <button type="submit">➤</button>
+          <button type="submit"><img src="./assets/icons/send-icon.svg" alt="send button"></button>
         </form>
       </div>
     </article>
