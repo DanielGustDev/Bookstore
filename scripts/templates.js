@@ -10,8 +10,8 @@ function createSingleCommentTemplate(singleComment) {
 
   return `
     <div class="comment-item">
-      <span class="comment-author">[${authorName}]</span>: 
-      <span class="comment-text">${commentText}</span>
+      <p class="comment-author">[${authorName}]: </p>
+      <p class="comment-text">${commentText}</p>
     </div>
   `;
 }
@@ -58,11 +58,11 @@ function createBookCardTemplate(singleBook, bookIndex) {
 
       <div class="book-meta">
         <div class="price-like-row">
-          <span class="price">${formattedPrice}</span>
-          <span class="likes">
+          <p class="price">${formattedPrice}</p>
+          <p class="likes">
             ${bookLikes} 
             <button class="heart-icon ${likeClass}" onclick="toggleLike(${bookIndex})"><img src="./assets/icons/heart.svg" alt="like button"></button>
-          </span>
+          </p>
         </div>
         
         <table class="info-table">
