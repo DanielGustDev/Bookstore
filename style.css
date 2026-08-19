@@ -43,11 +43,12 @@ main {
     justify-content: center;
     align-items: center;
 
+    width: clamp(280px, 50vw, 640px);
     border: 6px solid var(--border);
     border-radius: var(--border-radius);
 
     margin: 24px;
-    padding: 8px;
+    padding: 16px;
 
     background-color: var(--background-primary);
 }
