@@ -1,12 +1,8 @@
 :root {
-    --font-primary: rgb(245, 245, 245);
-    --background-primary: rgb(18, 18, 18);
+    --font-primary: rgb(18, 18, 18);
+    --font-secondary: rgb(245, 245, 245);
+    --background-primary: rgb(245, 245, 245);
     --background-secondary: rgb(112, 128, 144);
-    --border: rgb(133, 147, 134);
+    --border: rgb(18, 18, 18);
     --border-radius: 16px;
-    --text-background: background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
