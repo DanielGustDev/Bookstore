@@ -33,7 +33,7 @@
     width: 156px;
 }
 
-button {
+.book-card button {
     background-color: var(--background-primary);
 
     border: none;
@@ -46,4 +46,25 @@ button img {
 
 button:hover {
     cursor: pointer;
+}
+
+dialog {
+    margin: auto;
+
+    max-width: 400px;
+
+    border: 6px solid var(--border);
+    border-radius: var(--border-radius);
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(6px);
+}
+
+dialog button {
+    background-color: var(--background-primary);
+
+    border: 2px solid var(--border);
+    border-radius: var(--border-radius);
+    outline: none;
 }

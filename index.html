@@ -25,10 +25,20 @@
         <div class="headline">
             <img src="./assets/icons/book-white.svg" alt="book icon">
             <h1>Small Bookstore</h1>
+            <button onclick="openLikedBooksDialog()"><img src="./assets/icons/heart-white.svg"
+                    alt="heart icon for liked list"></button>
         </div>
     </header>
     <main>
         <article id="book-container"></article>
+
+        <dialog id="liked-books-dialog" onclick="closeLikedBooksDialog()">
+            <div class="dialog-content" onclick="stopBubbling(event)">
+                <h2>Gelikte Bücher</h2>
+                <div id="liked-books-list-container"></div>
+                <button onclick="closeLikedBooksDialog()">close</button>
+            </div>
+        </dialog>
     </main>
 </body>
 

@@ -33,6 +33,12 @@ header img {
     border-radius: 32px;
 }
 
+.headline button {
+    background-color: transparent;
+    border: none;
+    border-radius: 32px;
+}
+
 main {
     display: flex;
     justify-content: center;
@@ -45,7 +51,7 @@ main {
     justify-content: center;
     align-items: center;
 
-    width: clamp(280px, 50vw, 640px);
+    width: clamp(300px, 70vw, 700px);
     border: 6px solid var(--border);
     border-radius: var(--border-radius);
 
@@ -58,11 +64,31 @@ main {
 .book-meta {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 56px;
 }
 
 .likes {
     display: flex;
+}
+
+/* 1. ZUSTAND: Hover auf ein UNGELIKTES Herz -> Halbvolles Herz */
+.heart-icon:not(.liked):hover img {
+    content: url("../assets/icons/heart-hover.svg");
+    /* Pfad zum halbvollen Herz */
+    transform: scale(1.1);
+}
+
+/* 2. ZUSTAND: Geliked -> Volles Herz */
+.heart-icon.liked img {
+    content: url("../assets/icons/heart-clicked.svg");
+    /* Pfad zum vollen Herz */
+}
+
+/* 3. ZUSTAND: Hover auf ein GELIKTES Herz -> Wieder halbvoll als Vorschau aufs Entliken */
+.heart-icon.liked:hover img {
+    content: url("../assets/icons/heart-hover.svg");
+    transform: scale(1.1);
 }
 
 .comments-section {
