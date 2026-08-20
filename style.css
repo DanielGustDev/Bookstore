@@ -68,6 +68,11 @@ main {
     gap: 56px;
 }
 
+.price {
+    font-size: 1.5rem;
+    color: var(--background-secondary);
+}
+
 .likes {
     display: flex;
 }

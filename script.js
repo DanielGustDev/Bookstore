@@ -72,18 +72,14 @@ function renderBooks() {
   container.innerHTML = allBooksHtml;
 }
 
-function init() {
-  renderBooks();
-  renderComments();
-}
-
 // Speicherliste für gelikte Bücher (als konstantes Array)
 const likedBooksList = [];
 
 // 1. Startfunktion: Erst Daten laden, dann anzeigen
 function init() {
-  loadLikesFromLocalStorage();
+  loadBooksFromLocalStorage();
   renderBooks();
+  renderComments();
 }
 
 // 2. Klick-Funktion für den Herz-Button
@@ -106,49 +102,16 @@ function toggleLike(bookIndex) {
   }
 
   // Daten sichern und Seite neu zeichnen
-  saveLikesToLocalStorage();
+  saveBooksToLocalStorage();
   renderBooks();
 }
 
-// 3. Hilfsfunktion: Buch aus dem Array entfernen
+// Hilfsfunktion: Buch aus dem Array entfernen
 function removeBookFromLikedList(bookToRemove) {
   for (let i = 0; i < likedBooksList.length; i = i + 1) {
     if (likedBooksList[i] === bookToRemove) {
       likedBooksList.splice(i, 1); // Entfernt exakt 1 Element an Position i
       break; // Schleife sofort beenden
-    }
-  }
-}
-
-// 4. Im Browser-Speicher sichern
-function saveLikesToLocalStorage() {
-  const titlesToSave = [];
-
-  for (let i = 0; i < likedBooksList.length; i = i + 1) {
-    titlesToSave.push(likedBooksList[i].name);
-  }
-
-  const jsonString = JSON.stringify(titlesToSave);
-  localStorage.setItem("likedBooks", jsonString);
-}
-
-// 5. Aus dem Browser-Speicher laden
-function loadLikesFromLocalStorage() {
-  const savedData = localStorage.getItem("likedBooks");
-
-  if (!savedData) {
-    return; // Abbrechen, falls noch nichts gespeichert wurde
-  }
-
-  const savedTitles = JSON.parse(savedData);
-
-  for (let i = 0; i < books.length; i = i + 1) {
-    const book = books[i];
-
-    if (savedTitles.includes(book.name)) {
-      book.liked = true;
-      book.likes = book.likes + 1; // Zähler für gelikte Bücher anpassen
-      likedBooksList.push(book);
     }
   }
 }
@@ -203,4 +166,65 @@ function renderLikedBooksList() {
 
 function stopBubbling(event) {
   event.stopPropagation();
+}
+
+// 2. addComment-Funktion mit Speicherung erweitern
+function addComment(event, bookIndex) {
+  event.preventDefault();
+
+  const form = event.target;
+  const inputElement = form.querySelector("input");
+  const commentText = inputElement.value;
+
+  const book = books[bookIndex];
+
+  if (!book) {
+    return;
+  }
+
+  if (!Array.isArray(book.comments)) {
+    book.comments = [];
+  }
+
+  const newComment = {
+    name: "MySelf",
+    comment: commentText,
+  };
+
+  book.comments.push(newComment);
+
+  // NEU: Nach dem Hinzufügen im LocalStorage speichern
+  saveBooksToLocalStorage();
+
+  renderBooks();
+}
+
+// 3. Hilfsfunktion: Aktuelle Bücher-Daten im Browser sichern
+function saveBooksToLocalStorage() {
+  const jsonString = JSON.stringify(books);
+  localStorage.setItem("myBooksData", jsonString);
+}
+
+// 4. Hilfsfunktion: Gespeicherte Daten beim Laden wiederherstellen
+function loadBooksFromLocalStorage() {
+  const savedData = localStorage.getItem("myBooksData");
+
+  if (!savedData) {
+    return; // Wenn noch nichts gespeichert ist, bleiben die Standard-Daten
+  }
+
+  // Ersetzt das globale 'books'-Array durch den gespeicherten Stand
+  const parsedBooks = JSON.parse(savedData);
+
+  // Überprüfen, ob die Daten gültig sind, und das Array aktualisieren
+  if (Array.isArray(parsedBooks) && parsedBooks.length > 0) {
+    for (let i = 0; i < parsedBooks.length; i = i + 1) {
+      books[i] = parsedBooks[i];
+
+      // Falls das Buch gelikt war, auch direkt in der likedBooksList registrieren
+      if (books[i].liked === true && !likedBooksList.includes(books[i])) {
+        likedBooksList.push(books[i]);
+      }
+    }
+  }
 }
