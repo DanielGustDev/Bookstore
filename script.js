@@ -34,7 +34,7 @@ function renderComments(commentArray) {
     !Array.isArray(commentArray) ||
     commentArray.length === 0
   ) {
-    return '<p class="no-comments">No comments found.</p>';
+    return "<p>No comments found.</p>";
   }
 
   const commentHtmlArray = commentArray.map(function (singleComment) {

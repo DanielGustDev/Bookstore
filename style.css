@@ -57,17 +57,16 @@ main {
 
 .book-meta {
     display: flex;
-    flex-direction: column;
-    gap: 32px;
-}
-
-.price-like-row {
-    display: flex;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: 56px;
 }
 
 .likes {
     display: flex;
+}
+
+.comments-section {
+    width: 80%;
 }
 
 .comment-item {
@@ -99,4 +98,6 @@ main {
 
 .comment-input-box {
     display: flex;
+
+    margin-top: 8px;
 }

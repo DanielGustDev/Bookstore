@@ -16,74 +16,84 @@ function createSingleCommentTemplate(singleComment) {
   `;
 }
 
+// 1. Datenbereinigung & Fallback-Werte
+function getCleanBookData(singleBook) {
+  return {
+    name: singleBook.name || "unknown title",
+    author: singleBook.author || "unknown author",
+    publishedYear: singleBook.publishedYear || "unknown",
+    genre: singleBook.genre || "unknown",
+    likes: typeof singleBook.likes === "number" ? singleBook.likes : 0,
+    price: getFormattedPrice(singleBook.price),
+    likeClass: getLikeClass(singleBook.liked),
+    commentsHtml: renderComments(singleBook.comments),
+  };
+}
+
+// 2. HTML-Teilbereich: Meta-Informationen (Tabelle)
+function renderBookMetaTable(book) {
+  return `
+    <table class="info-table">
+      <tr><td><strong>Author</strong></td><td>: ${book.author}</td></tr>
+      <tr><td><strong>Published</strong></td><td>: ${book.publishedYear}</td></tr>
+      <tr><td><strong>Genre</strong></td><td>: ${book.genre}</td></tr>
+    </table>
+  `;
+}
+
+// 3. HTML-Teilbereich: Like-Sektion
+function renderLikeSection(likes, likeClass, bookIndex) {
+  return `
+    <p class="likes">
+      ${likes} 
+      <button class="heart-icon ${likeClass}" onclick="toggleLike(${bookIndex})">
+        <img src="./assets/icons/heart.svg" alt="like button">
+      </button>
+    </p>
+  `;
+}
+
+// 4. HTML-Teilbereich: Kommentar-Sektion (Liste + Formular)
+function renderCommentsSection(commentsHtml, bookIndex) {
+  return `
+    <div class="comments-section">
+      <h3>Comments:</h3>
+      <div class="comments-list">
+        ${commentsHtml}
+      </div>
+      
+      <form class="comment-input-box" onsubmit="addComment(event, ${bookIndex})">
+        <input type="text" placeholder="Add your comment ..." required>
+        <button type="submit">
+          <img src="./assets/icons/send-icon.svg" alt="send button">
+        </button>
+      </form>
+    </div>
+  `;
+}
+
+// 5. Hauptfunktion: Zusammensetzung der Card-Template
 function createBookCardTemplate(singleBook, bookIndex) {
-  let bookName = singleBook.name;
-  if (!bookName) {
-    bookName = "unknown title";
-  }
-
-  let bookAuthor = singleBook.author;
-  if (!bookAuthor) {
-    bookAuthor = "unknown author";
-  }
-
-  let publishedYear = singleBook.publishedYear;
-  if (!publishedYear) {
-    publishedYear = "unknown";
-  }
-
-  let bookGenre = singleBook.genre;
-  if (!bookGenre) {
-    bookGenre = "unknown";
-  }
-
-  let bookLikes = singleBook.likes;
-  if (typeof bookLikes !== "number") {
-    bookLikes = 0;
-  }
-
-  const formattedPrice = getFormattedPrice(singleBook.price);
-  const likeClass = getLikeClass(singleBook.liked);
-  const commentsHtml = renderComments(singleBook.comments);
+  const book = getCleanBookData(singleBook);
 
   return `
     <article class="book-card">
-      <h2>${bookName}</h2>
+      <h2>${book.name}</h2>
       <div class="divider"></div>
       
       <div class="book-cover">
-        <img src="./assets/icons/book.svg" alt="${bookName}">
+        <img src="./assets/icons/book.svg" alt="${book.name}">
       </div>
       <div class="divider"></div>
 
       <div class="book-meta">
-        <div class="price-like-row">
-          <p class="price">${formattedPrice}</p>
-          <p class="likes">
-            ${bookLikes} 
-            <button class="heart-icon ${likeClass}" onclick="toggleLike(${bookIndex})"><img src="./assets/icons/heart.svg" alt="like button"></button>
-          </p>
-        </div>
-        
-        <table class="info-table">
-          <tr><td><strong>Author</strong></td><td>: ${bookAuthor}</td></tr>
-          <tr><td><strong>Published</strong></td><td>: ${publishedYear}</td></tr>
-          <tr><td><strong>Genre</strong></td><td>: ${bookGenre}</td></tr>
-        </table>
+        <p class="price">${book.price}</p>
+        ${renderBookMetaTable(book)}
+        ${renderLikeSection(book.likes, book.likeClass, bookIndex)}
       </div>
       <div class="divider"></div>
 
-      <div class="comments-section">
-        <h3>Comments:</h3>
-        <div class="comments-list">
-          ${commentsHtml}
-        </div>
-        
-        <form class="comment-input-box" onsubmit="addComment(event, ${bookIndex})">
-          <input type="text" placeholder="Add your comment ..." required>
-          <button type="submit"><img src="./assets/icons/send-icon.svg" alt="send button"></button>
-        </form>
-      </div>
+      ${renderCommentsSection(book.commentsHtml, bookIndex)}
     </article>
   `;
 }
