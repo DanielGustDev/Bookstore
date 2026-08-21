@@ -1,5 +1,28 @@
-// @ts-nocheck
+/**
+ * @typedef {Object} BookComment
+ * @property {string} name
+ * @property {string} comment
+ */
 
+/**
+ * @typedef {Object} Book
+ * @property {string} name
+ * @property {string} author
+ * @property {number | string} [publishedYear]
+ * @property {string} [genre]
+ * @property {number} price
+ * @property {boolean} liked
+ * @property {number} likes
+ * @property {BookComment[]} [comments]
+ */
+
+/**
+ * Safely retrieves the author's name from a comment object.
+ *
+ * @param {Object} singleComment - The comment object containing user data.
+ * @param {string} [singleComment.name] - The author's name.
+ * @returns {string} The author's name if present, otherwise "unknown".
+ */
 function getAuthorName(singleComment) {
   if (singleComment && singleComment.name) {
     return singleComment.name;
@@ -7,6 +30,13 @@ function getAuthorName(singleComment) {
   return "unknown";
 }
 
+/**
+ * Safely retrieves the comment text from a comment object.
+ *
+ * @param {Object} singleComment - The comment object containing user data.
+ * @param {string} [singleComment.comment] - The comment message content.
+ * @returns {string} The comment text if present, otherwise an empty string.
+ */
 function getCommentText(singleComment) {
   if (singleComment && singleComment.comment) {
     return singleComment.comment;
@@ -14,6 +44,12 @@ function getCommentText(singleComment) {
   return "";
 }
 
+/**
+ * Formats a numeric book price into a localized currency string formatted as `0,00 €`.
+ *
+ * @param {number} bookPrice - The price of the book.
+ * @returns {string} The formatted price string.
+ */
 function getFormattedPrice(bookPrice) {
   if (typeof bookPrice === "number") {
     return bookPrice.toFixed(2).replace(".", ",") + " €";
@@ -21,6 +57,12 @@ function getFormattedPrice(bookPrice) {
   return "0,00 €";
 }
 
+/**
+ * Returns a CSS class name based on the boolean state of a book's like status.
+ *
+ * @param {boolean} isLiked - Indicates whether the book is liked.
+ * @returns {string} `"liked"` if `isLiked` is true, otherwise an empty string.
+ */
 function getLikeClass(isLiked) {
   if (isLiked) {
     return "liked";
@@ -28,6 +70,12 @@ function getLikeClass(isLiked) {
   return "";
 }
 
+/**
+ * Generates an HTML string containing rendered comment items from an array.
+ *
+ * @param {BookComment[] | null | undefined} commentArray - An array of comment objects.
+ * @returns {string} The concatenated HTML string for all comments, or a fallback paragraph if empty.
+ */
 function renderComments(commentArray) {
   if (
     !commentArray ||
@@ -44,6 +92,12 @@ function renderComments(commentArray) {
   return commentHtmlArray.join("");
 }
 
+/**
+ * Renders all available books into the `#book-container` DOM element.
+ * Reads data from the global `books` array and updates container `innerHTML`.
+ *
+ * @returns {void}
+ */
 function renderBooks() {
   const container = document.getElementById("book-container");
 
@@ -72,17 +126,30 @@ function renderBooks() {
   container.innerHTML = allBooksHtml;
 }
 
-// Speicherliste für gelikte Bücher (als konstantes Array)
+/**
+ * In-memory storage list for liked book objects.
+ * @type {Book[]}
+ */
 const likedBooksList = [];
 
-// 1. Startfunktion: Erst Daten laden, dann anzeigen
+/**
+ * Initializes the application state by loading stored data from LocalStorage
+ * and rendering both books and comments to the DOM.
+ *
+ * @returns {void}
+ */
 function init() {
   loadBooksFromLocalStorage();
   renderBooks();
-  renderComments();
 }
 
-// 2. Klick-Funktion für den Herz-Button
+/**
+ * Toggles the like state of a book by its index, updates its like counter,
+ * synchronization with `likedBooksList`, saves changes to LocalStorage, and re-renders the UI.
+ *
+ * @param {number} bookIndex - The index position of the book in the `books` array.
+ * @returns {void}
+ */
 function toggleLike(bookIndex) {
   const book = books[bookIndex];
 
@@ -90,7 +157,7 @@ function toggleLike(bookIndex) {
     return;
   }
 
-  // Zustand umschalten
+  // Toggle state
   if (book.liked === true) {
     book.liked = false;
     book.likes = book.likes - 1;
@@ -101,44 +168,65 @@ function toggleLike(bookIndex) {
     likedBooksList.push(book);
   }
 
-  // Daten sichern und Seite neu zeichnen
+  // Save data and re-render page
   saveBooksToLocalStorage();
   renderBooks();
 }
 
-// Hilfsfunktion: Buch aus dem Array entfernen
+/**
+ * Removes a specific book object from the `likedBooksList` array.
+ *
+ * @param {Object} bookToRemove - The book object to remove.
+ * @returns {void}
+ */
 function removeBookFromLikedList(bookToRemove) {
   for (let i = 0; i < likedBooksList.length; i = i + 1) {
     if (likedBooksList[i] === bookToRemove) {
-      likedBooksList.splice(i, 1); // Entfernt exakt 1 Element an Position i
-      break; // Schleife sofort beenden
+      likedBooksList.splice(i, 1); // Removes exactly 1 element at position i
+      break; // Exit loop immediately
     }
   }
 }
 
-// 1. Dialog öffnen und Inhalt Rendern
+/**
+ * Renders the list of liked books and opens the modal dialog.
+ *
+ * @returns {void}
+ */
 function openLikedBooksDialog() {
-  const dialog = document.getElementById("liked-books-dialog");
+  const dialog = /** @type {HTMLDialogElement | null} */ (
+    document.getElementById("liked-books-dialog")
+  );
 
   if (!dialog) {
     return;
   }
 
   renderLikedBooksList();
-
   dialog.showModal();
 }
 
-// 2. Dialog schließen
+/**
+ * Closes the liked books modal dialog if present in the DOM.
+ *
+ * @returns {void}
+ */
 function closeLikedBooksDialog() {
-  const dialog = document.getElementById("liked-books-dialog");
+  const dialog = /** @type {HTMLDialogElement | null} */ (
+    document.getElementById("liked-books-dialog")
+  );
 
   if (dialog) {
     dialog.close();
   }
 }
 
-// 3. HTML-Liste für den Dialog erstellen
+/**
+ * Renders the HTML markup for liked books inside `#liked-books-list-container`.
+ * Displays an informational message if no books are liked.
+ *
+ * @returns {void}
+ */
 function renderLikedBooksList() {
   const container = document.getElementById("liked-books-list-container");
 
@@ -146,7 +234,7 @@ function renderLikedBooksList() {
     return;
   }
 
-  // Falls keine Bücher gelikt sind
+  // If no books are liked
   if (likedBooksList.length === 0) {
     container.innerHTML = "<p>Du hast noch keine Bücher gelikt.</p>";
     return;
@@ -164,64 +252,86 @@ function renderLikedBooksList() {
   container.innerHTML = html;
 }
 
+/**
+ * Stops event propagation (bubbling) to prevent parent event listeners from triggering.
+ *
+ * @param {Event} event - The DOM Event object.
+ * @returns {void}
+ */
 function stopBubbling(event) {
   event.stopPropagation();
 }
 
-// 2. addComment-Funktion mit Speicherung erweitern
+/**
+ * Handles the submit event for adding a new comment to a specified book,
+ * saves the state to LocalStorage, and triggers a UI update.
+ *
+ * @param {SubmitEvent} event - The form submission event.
+ * @param {number} bookIndex - The index of the targeted book in the `books` array.
+ * @returns {void}
+ */
 function addComment(event, bookIndex) {
   event.preventDefault();
 
-  const form = event.target;
-  const inputElement = form.querySelector("input");
-  const commentText = inputElement.value;
-
+  const form = /** @type {HTMLFormElement | null} */ (event.target);
   const book = books[bookIndex];
 
-  if (!book) {
+  if (!form || !book) {
     return;
   }
 
-  if (!Array.isArray(book.comments)) {
-    book.comments = [];
+  const inputElement = /** @type {HTMLInputElement | null} */ (
+    form.querySelector("input")
+  );
+
+  if (!inputElement || !inputElement.value.trim()) {
+    return;
   }
 
-  const newComment = {
+  // Initializes the array if no comments exist yet
+  book.comments = book.comments || [];
+
+  book.comments.push({
     name: "MySelf",
-    comment: commentText,
-  };
+    comment: inputElement.value.trim(),
+  });
 
-  book.comments.push(newComment);
-
-  // NEU: Nach dem Hinzufügen im LocalStorage speichern
   saveBooksToLocalStorage();
-
   renderBooks();
 }
 
-// 3. Hilfsfunktion: Aktuelle Bücher-Daten im Browser sichern
+/**
+ * Serializes and saves the global `books` array to the browser's `localStorage` under key `"myBooksData"`.
+ *
+ * @returns {void}
+ */
 function saveBooksToLocalStorage() {
   const jsonString = JSON.stringify(books);
   localStorage.setItem("myBooksData", jsonString);
 }
 
-// 4. Hilfsfunktion: Gespeicherte Daten beim Laden wiederherstellen
+/**
+ * Loads saved book data from `localStorage` under key `"myBooksData"`, updates the global `books` array,
+ * and populates `likedBooksList` with previously liked books.
+ *
+ * @returns {void}
+ */
 function loadBooksFromLocalStorage() {
   const savedData = localStorage.getItem("myBooksData");
 
   if (!savedData) {
-    return; // Wenn noch nichts gespeichert ist, bleiben die Standard-Daten
+    return; // Keep default data if nothing is saved
   }
 
-  // Ersetzt das globale 'books'-Array durch den gespeicherten Stand
+  // Replace global 'books' array with saved state
   const parsedBooks = JSON.parse(savedData);
 
-  // Überprüfen, ob die Daten gültig sind, und das Array aktualisieren
+  // Validate data and update array
   if (Array.isArray(parsedBooks) && parsedBooks.length > 0) {
     for (let i = 0; i < parsedBooks.length; i = i + 1) {
       books[i] = parsedBooks[i];
 
-      // Falls das Buch gelikt war, auch direkt in der likedBooksList registrieren
+      // Re-register liked books in likedBooksList
       if (books[i].liked === true && !likedBooksList.includes(books[i])) {
         likedBooksList.push(books[i]);
       }
