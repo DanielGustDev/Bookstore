@@ -17,6 +17,8 @@ An interactive web application for managing and displaying a book collection, bu
 
 ## 📁 Project Structure
 
+```text
+.
 Bookstore/
 ├── assets/
 │ ├── fonts/ # Local web fonts
@@ -35,6 +37,7 @@ Bookstore/
 ├── README.md # Project documentation
 ├── script.js # Main application logic and state management
 └── style.css # Custom page-specific stylesheet
+```
 
 ---
 
